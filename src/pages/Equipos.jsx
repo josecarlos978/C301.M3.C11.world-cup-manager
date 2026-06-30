@@ -1,33 +1,55 @@
-import { createClient } from "@supabase/supabase-js";
-import { useEffect } from "react";
-import { useState } from "react";
-const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
+import { createClient } from "@supabase/supabase-js"
+import { useState, useEffect } from "react"
+
+const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY)
 
 export default function Equipos() {
 
-  const [instruments, setInstruments] = useState([]);
+  const [equipos, setEquipos] = useState([])
 
   useEffect(() => {
-    getInstruments();
-  }, []);
+    // Apenas se construya mi componente
+    getEquipos()
+  }, [])
 
-  async function getInstruments() {
-    const { data, error } = await supabase.from("equipos").select('*');
+  // Es un estandar que hace referencia OBTENER
+  async function getEquipos() {
+    // SELECT * FROM equipos;
+    const { data, error } = await supabase.from('equipos').select('*')
+
     if (error) {
-      console.error(error);
-      return;
+      console.error(error)
+      return
     }
-    setInstruments(data);
     console.log(data)
+    setEquipos(data) // Toda la informacion de mi 
+    // mi supabase lo estoy introduciendo a equipos
   }
-
 
   return (
     <div className="flex items-center justify-center h-[calc(100vh-12rem)]">
       <div className="text-center">
-        <span className="material-symbols-outlined text-6xl text-outline mb-4">groups</span>
-        <h2 className="text-headline-md text-primary mb-2">Equipos</h2>
-        <p className="text-body-md text-on-surface-variant">Gestión de selecciones participantes</p>
+        <table>
+          <tr>
+            <th>Nombre</th>
+            <th>Grupo</th>
+            <th>Ranking</th>
+            <th>Opciones</th>
+          </tr>
+          {
+            equipos.map(equipo => (
+              <tr>
+                <td>{equipo.nombre}</td>
+                <td>{equipo.grupo}</td>
+                <td>{equipo.ranking_fifa}</td>
+                <td>
+                  <buton>Editar</buton>
+                  <button>Eliminar</button>
+                </td>
+              </tr>
+            ))
+          }
+        </table>
       </div>
     </div>
   )
